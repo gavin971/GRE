@@ -7,7 +7,26 @@ import os
 import requests
 import re
 import pygame
-
+filepath = r'C:\Users\watersir zhangga\Desktop\托福词汇'+'\\'
+def ciyuan(w):
+    excel = filepath + '词源.xls'
+    workbook = xlrd.open_workbook(excel)
+    sheet = workbook.sheet_by_index(0)
+    nrows = sheet.nrows
+    ncols = sheet.ncols
+    i = 0
+    while True:
+        if i >= nrows:
+            break
+        else:
+            word_byte_utf8 = sheet.cell(i,0).value.encode('utf-8')
+            word = word_byte_utf8.decode()
+            if word==w:
+                ciyuan_byte_utf8 = sheet.cell(i,2).value.encode('utf-8')
+                print('词源：', ciyuan_byte_utf8.decode())
+                break
+            else:
+                i += 1
 def vocal(word):
 
     headers = {
@@ -36,7 +55,7 @@ def vocal(word):
     track = pygame.mixer.music.load(file)
     pygame.mixer.music.play()
     #os.system(path + name)
-filepath = r'C:\Users\watersir zhangga\Desktop\托福词汇'+'\\'
+
 def load():
     doc=open(filepath+'doc.txt','r')
     last = 0
@@ -151,7 +170,8 @@ if __name__ == '__main__':
         print(last,':',word.decode('utf-8'))
         paraphrase_eng = sheet.cell(last,4).value.encode('utf-8')
         print('音标:',paraphrase_eng.decode('utf-8'))
-        vocal(str(word.decode('utf-8')))
+        vocal(str(word.decode('utf-8'))) # 发音
+        
         whole = sheet.cell(last,0).value
         forget = sheet.cell(last,1).value
         choose = getkeys(['1','2','3','4','1 note','2 note','3 note','re'])
@@ -179,12 +199,14 @@ if __name__ == '__main__':
             shit.write(last, 4, 'easy')
         if key == '4':
             break
-        paraphrase_chn = sheet.cell(last,3).value.encode('utf-8')
-        print('中文释义:',paraphrase_chn.decode('utf-8'))
-
+        chn = sheet.cell(last,3).value.encode('utf-8')
+        print('中文释义:', chn.decode('utf-8'))
         paraphrase_note = sheet.cell(last,5).value.encode('utf-8')
         if len(paraphrase_note) != 0:
             print('笔记:',paraphrase_note.decode('utf-8'))
+        ciyuan = sheet.cell(last, 6).value.encode('utf-8')
+        if len(ciyuan) != 0:
+            print('词源:', ciyuan.decode('utf-8')) 
         if note_flag == 'note':
             note = getnote()
             shit.write(last, 5, note)
